@@ -75,7 +75,7 @@ const handleSubmit = async (e) => {
 
   try {
     // Fetch data from server
-    const response = await fetch('http://localhost:5000', {
+    const response = await fetch('https://codex-ai-zvaz.onrender.com/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json' // Set content type for JSON

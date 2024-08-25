@@ -20,15 +20,19 @@ function loader(element) {
 function typeText(element, text) {
   let index = 0;
 
+  // Replace **----Title----** with <strong>Title</strong>
+  const formattedText = text.replace(/\*\*----(.*?)----\*\*/g, "<strong>$1</strong>");
+
   let interval = setInterval(() => {
-    if (index < text.length) {
-      element.innerHTML += text.charAt(index); // Fixed typo here
+    if (index < formattedText.length) {
+      element.innerHTML += formattedText.charAt(index);
       index++;
     } else {
       clearInterval(interval);
     }
   }, 20);
 }
+
 
 function generateUniqueId() {
   const timestamp = Date.now();
@@ -40,7 +44,7 @@ function generateUniqueId() {
 
 function chatStripe(isAi, value, uniqueId) {
   return `
-      <div class="wrapper ${isAi ? "ai-response" : ""}">
+      <div class="wrapper ${isAi ? " ai ai-response" : ""}">
          <div class="chat">
               <div class="profile">
                    <img 
@@ -75,7 +79,7 @@ const handleSubmit = async (e) => {
 
   try {
     // Fetch data from server
-    const response = await fetch('https://codex-ai-zvaz.onrender.com/', {
+    const response = await fetch('http://localhost:5000/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json' // Set content type for JSON
@@ -92,8 +96,10 @@ const handleSubmit = async (e) => {
       const data = await response.json();
       const parsedData = data.bot;
       console.log(parsedData);
+               
+      
 
-      typeText(messageDiv, parsedData);
+      typeText(messageDiv,parsedData );
     } else {
       const err = await response.text();
       messageDiv.innerHTML = "Something went wrong";

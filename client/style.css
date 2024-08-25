@@ -47,6 +47,7 @@ body {
 .wrapper {
   width: 100%;
   padding: 15px;
+  
 }
 
 .ai {
@@ -68,7 +69,6 @@ body {
   width: 36px;
   height: 36px;
   border-radius: 5px;
-
   background: #5436DA;
 
   display: flex;
@@ -179,10 +179,15 @@ form img {
   color: #dcdcdc;            /* Light text color */
   border-radius: 12px;       /* Small border radius for a modern look */
   padding: 12px 16px;        /* Padding for some spacing inside the message */
-  max-width: 80%;            /* Constrain width to keep messages readable */
+  max-width: 100%;            /* Constrain width to keep messages readable */
   margin: 8px 0;             /* Margin for spacing between messages */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
 }
+.ai-response .message strong {
+  font-weight: bold;
+  color: #0056b3; /* Customize color if needed */
+}
+
 
 /* Optional: Hover effect for interaction */
 .ai-response:hover {
@@ -222,7 +227,7 @@ body {
   flex: 1;
   width: 100%;
   overflow-y: scroll;
-
+  margin: 10px;
   display: flex;
   flex-direction: column;
   gap: 10px;

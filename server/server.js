@@ -1,6 +1,11 @@
 import express from 'express';
 import * as dotenv from 'dotenv';
 import cors from 'cors';
+import {
+  GoogleGenerativeAI,
+  HarmCategory,
+  HarmBlockThreshold,
+} from "@google/generative-ai";
 
 import axios from 'axios';
 
@@ -29,40 +34,45 @@ app.get('/', async (req, res) => {
 
 app.post('/', async (req, res) => { 
        
-const options = {
-    method: 'POST',
-    url: 'https://chatgpt-42.p.rapidapi.com/conversationgpt4-2',
-    headers: {
-      'x-rapidapi-key': process.env.x-rapid-api-key,
-      'x-rapidapi-host': 'chatgpt-42.p.rapidapi.com',
-      'Content-Type': 'application/json'
-    },
-    data: {
-      messages: [
-        {
-          role: 'user',
-          content: `${req.body.prompt}`
-        }
-      ],
-      system_prompt: '',
-      temperature: 0.9,
-      top_k: 5,
-      top_p: 0.9,
-      max_tokens: 256,
-      web_access: false
-    }
-  };
-    
-    try {
-        const response = await axios.request(options);
-        res.status(200).send({
-            bot: response.data.result
-          });        
-         
-       
-    } catch (error) {
-        res.status(500).json({ msg:"failed to fetch"})
-    }
+/*
+ * Install the Generative AI SDK
+ *
+ * $ npm install @google/generative-ai
+ */
+
+
+
+const apiKey = process.env.GEMINI_API_KEY;
+const genAI = new GoogleGenerativeAI(apiKey);
+
+const model = genAI.getGenerativeModel({
+  model: "gemini-1.5-flash",
+});
+
+const generationConfig = {
+  temperature: 1,
+  topP: 0.95,
+  topK: 64,
+  maxOutputTokens: 8192,
+  responseMimeType: "text/plain",
+};
+
+async function run() {
+  const chatSession = model.startChat({
+    generationConfig,
+ // safetySettings: Adjust safety settings
+ // See https://ai.google.dev/gemini-api/docs/safety-settings
+    history: [
+    ],
+  });
+
+  const result = await chatSession.sendMessage(`${req.body.prompt}`);
+  res.status(200).json({ bot:result.response.text()})
+  console.log(result.response.text());
+}
+
+run();    
+  
 })
 
 app.listen(5000, () => console.log('AI server started on http://localhost:5000'))
